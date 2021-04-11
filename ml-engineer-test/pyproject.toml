@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "ml-engineer-test"
+version = "1.0.0"
+description = ""
+authors = ["Cesar Juarez <cesaripn2@gmail.com>"]
+packages = [
+    { include = "tamales_inc" }
+]
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+python-dotenv = "^0.14.0"
+click = "^7.1.2"
+sphinx = "^3.5.3"
+mlflow = "^1.15.0"
+scikit-learn = "^0.24.1"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0.1"
+coverage = "^5.2.1"
+flake8 = "^3.8.3"
+
+[tool.poetry.scripts]
+mypy_task = "scripts:mypy_task"
+bp_tests = "scripts:bp_tests"
+endpoints_tests = "scripts:endpoint_tests"
+coverage_task = "scripts:coverage_task"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
