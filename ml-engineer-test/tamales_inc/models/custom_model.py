@@ -5,10 +5,11 @@ from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import euclidean_distances
 from math import log
 
-class TemplateClassifier(BaseEstimator, RegressorMixin):
-
-    def __init__(self, demo_param='demo'):
-        self.demo_param = demo_param
+class BaseModel(BaseEstimator, RegressorMixin):
+    
+    def __init__(self, alpha, l1_ratio):
+        self.alpha = alpha
+        self.l1_ratio = l1_ratio
 
     def fit(self, X, y):
 
@@ -23,8 +24,8 @@ class TemplateClassifier(BaseEstimator, RegressorMixin):
 
         # Check is fit had been called
         #check_is_fitted(self)
-
+        X = check_array(X)
         # Input validation
-        predictions = X["ventas"] * X["peso_mes_por_categoria_calorica"] + X["ventas"].apply(log)
+        predictions = X[:, 0] * X[:, 1] + np.log(X[:, 0])
 
         return predictions

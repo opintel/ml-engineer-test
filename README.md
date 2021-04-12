@@ -1,48 +1,60 @@
 # ml-engineer-test
 Repositorio base para desarrollo de la prueba practica que forma parte del proceso de contratación para ML Engineer
 
-# Contexto
-Este repositorio usa como estructura base Cookiecutter Data Science el cual te ayudara a estructurar la logica de limpieza de datos y de feature engineering para tu prueba de forma ordenada.
-
-Si tienes dudas o curiosidad sobre este template puedes visitar su [documentación oficial](https://drivendata.github.io/cookiecutter-data-science/).
-
 ## Estructura de carpetas
 
-**EDA**. Para hacer exploración de datos esta permitido el uso de jupyter notebooks dentro de la carpeta notebooks.
+**EDA**. Se realizó la exploración de los datasets dentro del notebook data_exploration.ipynb
 
-**ML workflow**. El resultado final de tu proceso de ML debera estan dentro de la carpeta `ml-engineer-test/tamales_inc` el cual ya contiene una estructura base para que puedas modularizar tu proceso. Recuerda que todo tu código debe estar en archivos python.
+**ML workflow**. Contiene una serie de carpetas:
+- dags: Se guardan los dags de Airflow programados para la orquestación de tareas.
+- mlruns: Aquí se almacena la metadata correspondiente a los experimentos con MLFlow junto con los modelos resultantes. Contiene métricas calculadas e hiperparametros utilizados.
+- secrets: Se guardan las credenciales para conectarse al proyecto de gcp que se levantó para este examen.
 
-**API**. Todo el código resultante de la implementación del API debe vivir dentro de la carpeta `tamales_sales_service` que se encuentra al primer nivel de este repositorio. La estructura de carpetas internas queda a tu consideración, pero recuerda que debe existir un mecanismo claro para echar andar tu API.
+**API**. Contiene las siguientes carpetas para una mayor modularización:
+- data: Código correspondiente para conectarse a base de datos.
+- bp: Maneja la lógica de negocio del proceso de predicción. En este caso a partir del id del producto obtengo los features correspondientes desde la feature store.
+A partir de esta información se construye y se llama al microservicio que MLFlow utliza para servir predicciones.
+- endpoints: Se programan los endpoints destinados a llamar al servicio de predicción.
+- di: Se crean los módulos necesarios para todas las capas a traves de inyección de dependencias.
 
 ## Datos
-Los datos raw necesarios para realizar tu prueba se encuentran dentro de una cuenta de almancenamiento en azure (Blob storage).
+- Se utiliza bigquery para construir un feature store.
+- Se crean 2 buckets:
+   - opi_raw_data donde se almacenan los datos en crudo
+   - opi_processed_data guarda los datos procesados en dos carpetas train_set y test_set en formato parquet.
 
-Para descargar los archivos deben acceder por medio del [Explorador de Datos de Azure](https://azure.microsoft.com/es-es/features/storage-explorer/) usando la siguiente cadena de conexión:
 
-```https://opimltest.blob.core.windows.net/tamales-inc?sv=2020-04-08&st=2021-03-22T18%3A47%3A59Z&se=2022-03-23T18%3A47%3A00Z&sr=c&sp=rl&sig=4iGCoaMc5ZphqSrGrUNIK85t%2B6ovM%2FEvuIIv6WYyLAI%3D```
+## ¿Como correr el proyecto?
+1. Descargar el código desde el repositorio de github.
 
-Este acceso es de solo lectura y les permitira navegar de forma remota en los datos y descargarlos en tu ambiente local para que trabajaes en tu propuesta.
+2. Instalar poetry de manera global en el sistema.
 
-Los datos raw que debes descargar viviran dentro de la carpeta `ml-engineer-test/data/raw` de este repositorio durante el ciclo de desarrollo.
+3. Para correr el pipeline de entrenamiento.
+   - Ir a la raíz del proyecto y luego entrar a la carpeta ml-engineer-test.
+   - Instalar los paquetes requeridos: poetry install
+   - Setear la variable de entorno AIRFLOW_HOME a esta carpeta
+   - Levantar airflow: airflow scheduler en una terminal y airflow webserver en otra.
+   - Activar manualmente el dag "train_dag"
 
-Los datos procesados resultantes de tus pipelines de datos deberan vivir dentro de `ml-engineer-test/data/processed/`  y seguir la siguiente estructura
+   - Levantar la interfaz donde se visualizan los modelos entrenados: mlflow ui
+   - Tomar la ruta del modelo que se quiere desplegar en producción.
+   - Levantar el microservicio de predicción con mlflow models serve <uri del modelo>
 
-**Nota** No es necesario que incluyas los datos crudos en tu commit o tu Pull Request.
+4. Para levantar el servicio web
 
-```
-{nombre-fuente}/{version-datos-yyyymmdd}/archivo
-```
-Los formatos de datos sugeridos para escribir los datos son `csv` y `parquet`.
+    - Ir a la raíz del proyecto
+    - Instalar los paquetes requeridos: poetry install
+    - En bp/config.py setear la versión del modelo que esta en producción.
+    - Levantar el servicio web con python tamales-sales-service/main.py
 
-## ¿Como realizar esta prueba?
-1. Es necesario que hagas un fork de este repositorio
-2. Completes tu prueba practica dentro de tu fork. No olvides documentar los detalles de tu implementación en el readme del proyecto. 
-3. Los diagramas de proceso y de infraestructura propuesta de diseño debeb estar embebidos en este readme en la sección de propuesta de diseño. Agregar descripciones necesarias para entender la solución.
-4. Cuando tengas todo listo, mandar un Pull request a este repositorio con el siguiente formato `Ml Engineer: {tu-nombre}` y agregar en la descripción las limitantes o faltantes de tu examen de existir :)
+5. Para solicitar predicciones.
+    En postman u otro cliente hacer un POST request a la dirección http://localhost:8080/apis/products/predict/1.0.0
+    junto con un json con el siguiente formato: {"productid": "206050084"}
 
-Si existen dudas o problemas
 
-# Propuesta de diseño
+# Diagrama de proceso de integración (MLOps)
+![Screen 4](/images/proceso_de_integracion.png)
 
-# Contacto
-Cualquier duda enviar un email a f.vaquero@opianalytics.com copiando al contacto de RH que esta llevando tu proceso de contratación. 
+# Diagrama de infraestructura para escalar en la nube
+![Screen 4](/images/diagrama_de_infraestructura.png)
+

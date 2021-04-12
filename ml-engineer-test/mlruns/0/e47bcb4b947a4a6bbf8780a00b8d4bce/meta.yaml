@@ -1,0 +1,15 @@
+artifact_uri: file:///home/cesar/Documents/repositories/ml-engineer-test/ml-engineer-test/mlruns/0/e47bcb4b947a4a6bbf8780a00b8d4bce/artifacts
+end_time: 1618116197451
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+name: ''
+run_id: e47bcb4b947a4a6bbf8780a00b8d4bce
+run_uuid: e47bcb4b947a4a6bbf8780a00b8d4bce
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1618116197420
+status: 3
+tags: []
+user_id: cesar

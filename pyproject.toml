@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "ml-engineer-test"
+version = "0.1.0"
+description = ""
+authors = ["Cesar Juarez <cesar@wordbox.ai>"]
+packages = [
+    { include = "tamales-sales-service" }
+]
+
+[tool.poetry.dependencies]
+python = "3.8"
+google-cloud-logging = "^1.15.1"
+fastapi = "^0.61.1"
+uvicorn = "^0.11.8"
+python-dotenv = "^0.14.0"
+pandas = "^1.2.3"
+google-cloud-bigquery = "^2.13.1"
+
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.0.1"
+coverage = "^5.2.1"
+flake8 = "^3.8.3"
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
