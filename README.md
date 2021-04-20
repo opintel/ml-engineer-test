@@ -44,5 +44,11 @@ Si existen dudas o problemas
 
 # Propuesta de diseño
 
+Como primera fase  se propone correr un script quickeda con el que se explora la estructura de los datos en el datalake. En este jypbn se obtiene la estrctura del datalake y se "automatiza" la migracion de los datos en raw al data lake de "opi analytics". Esto debido a que  Creo que como buena practica En teoria aqui se haria update a nuestro datalake definido de tal forma que se subiran archivos prquet y por ejemplo si nuestra nube fuera aws esto reducieria tiempo y costos ya que podriamos deifinir las reglas en s3 glacier para que el file se comprima y su disponibilidad no sea inmediata , y con una buena politica d egobierno de datos esta informacion  viviría en nuestro sistema como backup o tendria una vida disponible i.e 2  meses.Una vez en el buquet de s3 o el blob de azure en nuestro sistema se ejecutaria el proceso de etl interno de nuestro datalake a un dawarehouse  i.e RDS con el esquema definido contenido por catalogos de producto, catalogo de zonas, ventas, catalogo de puntos de venta y la tabla de features  para ML , esto facilita los procesos de los modelos en productivo  y procesos staging o dev para experimeintos del equipo de DS.  En este caso simulo el datalake de opis enviando los parquets a una carpeta distinta en donde se corre el script de ETL interno y EDA que resulta en escribir los parquets  procesados para modelos productivos (Tabla de features) y los parquets de las tablas  del datawarehouse que alimenta otros procesos u experimentos .
+ - A continuacion el diagrama de la propuesta que iba a presentar ,por cuestiones de trabajo pude realizar la "automatizacion" de l datalake al datalake "opi" y la simulacion del datawarehouse mediante el archivos quick EDA y EDA.
+  
+ # Propuesta de diseño en Productivo.
+
+
 # Contacto
 Cualquier duda enviar un email a f.vaquero@opianalytics.com copiando al contacto de RH que esta llevando tu proceso de contratación. 
